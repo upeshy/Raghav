@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raghav Tour & Travels | Premium Travel Agency</title>
+
+<style>
+/* ===== GLOBAL STYLES ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;scroll-behavior:smooth;}
+body{background:linear-gradient(135deg,#0f172a,#020617);color:white;line-height:1.6;}
+a{text-decoration:none;}
+
+/* ===== HEADER ===== */
+.top-bar{
+background:linear-gradient(90deg,#ffcc00,#ff9900);
+padding:18px;text-align:center;box-shadow:0 5px 20px rgba(0,0,0,0.4);
+}
+.logo-box img{width:120px;height:120px;border-radius:50%;border:3px solid black;} /* Logo size increased */
+.logo-box span{font-size:22px;font-weight:bold;color:#111;display:block;margin-top:5px;}
+
+/* ===== NAVIGATION ===== */
+nav{background:rgba(0,0,0,0.9);text-align:center;padding:12px;position:sticky;top:0;z-index:999;backdrop-filter:blur(10px);}
+nav a{color:#ddd;margin:0 14px;font-size:15px;transition:0.3s;}
+nav a:hover{color:#ffcc00;}
+
+/* ===== HERO ===== */
+.hero{
+height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;
+background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.8)),
+url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');background-size:cover;background-position:center;
+}
+.hero h1{font-size:50px;background:linear-gradient(#ffcc00,#ff9900);-webkit-background-clip:text;color:transparent;}
+.btn{background:linear-gradient(45deg,#ffcc00,#ff9900);padding:12px 28px;border-radius:25px;color:black;margin-top:18px;border:none;cursor:pointer;font-weight:bold;transition:0.3s;}
+.btn:hover{transform:scale(1.08);box-shadow:0 0 12px #ffcc00;}
+
+/* ===== LIVE COUNTERS ===== */
+.counters{display:flex;justify-content:center;gap:50px;margin:40px 0;flex-wrap:wrap;text-align:center;}
+.counter{background:rgba(255,255,255,0.05);padding:20px 25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.3);min-width:150px;}
+.counter h3{font-size:36px;color:#ffcc00;margin-bottom:5px;transition:all 0.3s;}
+.counter p{color:#ccc;font-size:16px;}
+
+/* ===== SECTIONS ===== */
+section{padding:65px 15px;}
+h2{text-align:center;color:#ffcc00;margin-bottom:30px;font-size:28px;}
+
+/* ===== CARDS ===== */
+.packages{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;max-width:1100px;margin:auto;}
+.card{background:rgba(255,255,255,0.06);padding:22px;border-radius:15px;text-align:center;transition:0.3s;box-shadow:0 5px 20px rgba(0,0,0,0.3);}
+.card:hover{transform:translateY(-8px);box-shadow:0 10px 25px rgba(255,204,0,0.5);}
+
+/* ===== ABOUT ===== */
+#about p{color:#ccc;text-align:center;max-width:900px;margin:auto;font-size:16px;}
+.owner{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:25px;margin-top:25px;text-align:center;}
+.owner img{width:170px;height:170px;border-radius:50%;object-fit:cover;border:4px solid #ffcc00;}
+.owner div{color:#fff;}
+
+/* ===== GALLERY ===== */
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:1100px;margin:auto;}
+.gallery img{width:100%;height:180px;object-fit:cover;border-radius:10px;cursor:pointer;transition:0.3s;}
+.gallery img:hover{transform:scale(1.05);box-shadow:0 0 15px #ffcc00;}
+
+/* ===== BOOKING FORM ===== */
+form{max-width:420px;margin:auto;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.06);padding:25px;border-radius:15px;}
+label{color:#ffcc00;font-weight:bold;}
+input, select{padding:12px;border:none;border-radius:6px;outline:none;}
+#priceBox{text-align:center;color:#00ffcc;font-size:19px;margin-top:10px;}
+
+/* ===== REVIEWS ===== */
+#reviews .card{margin-bottom:20px;}
+
+/* ===== CONTACT ===== */
+.contact-box{text-align:center;line-height:1.8;font-size:16px;}
+
+/* ===== WHATSAPP ===== */
+.whatsapp-btn{position:fixed;bottom:20px;right:20px;background:#25D366;width:55px;height:55px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:22px;text-decoration:none;box-shadow:0 5px 15px rgba(0,0,0,0.3);}
+
+/* ===== POPUP ===== */
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:0.3s;}
+.overlay.active{opacity:1;visibility:visible;}
+.popup-box{background:#020617;padding:25px;border-radius:15px;text-align:center;}
+
+/* ===== IMAGE POPUP ===== */
+.img-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;}
+.img-popup img{max-width:90%;border-radius:10px;box-shadow:0 0 25px #ffcc00;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="top-bar">
+<div class="logo-box">
+<img src="logo.jpg" alt="Logo">
+<span>Raghav Tour & Travels</span>
+</div>
+</div>
+
+<!-- NAV -->
+<nav>
+<a href="#">Home</a>
+<a href="#counters">Stats</a>
+<a href="#about">About</a>
+<a href="#routes">Routes</a>
+<a href="#gallery">Gallery</a>
+<a href="#booking">Booking</a>
+<a href="#reviews">Reviews</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+<div>
+<h1>Travel Smart & Safe</h1>
+<a href="#booking" class="btn">Book Now</a>
+</div>
+</div>
+
+<!-- LIVE COUNTERS -->
+<section id="counters">
+<h2>Live Travel Stats</h2>
+<div class="counters">
+<div class="counter">
+<h3 id="totalBookings">0</h3>
+<p>Total Bookings</p>
+</div>
+<div class="counter">
+<h3 id="totalTravelers">0</h3>
+<p>Total Travelers</p>
+</div>
+<div class="counter">
+<h3 id="totalRoutes">0</h3>
+<p>Routes Booked</p>
+</div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+<h2>About Us</h2>
+<p>Raghav Tour & Travels एक trusted travel service है जो safe और affordable यात्रा प्रदान करता है।</p>
+<div class="owner">
+<img src="owner.jpg" alt="Rajeev Yadav">
+<div>
+<h3 style="color:#ffcc00;">Rajeev Yadav</h3>
+<p>Founder & Owner</p>
+<p>10+ Years Experience</p>
+</div>
+</div>
+</section>
+
+<!-- ROUTES -->
+<section id="routes">
+<h2>Popular Routes</h2>
+<div class="packages">
+  <div class="card"><h3>Rudrapur ➝ Delhi</h3><p>₹999</p><button class="btn" onclick="openRoutePopup('Rudrapur','Delhi','₹999')">Book</button></div>
+  <div class="card"><h3>Meerut ➝ Manali</h3><p>₹7,999</p><button class="btn" onclick="openRoutePopup('Meerut','Manali','₹7999')">Book</button></div>
+  <div class="card"><h3>Delhi ➝ Jaipur</h3><p>₹1,500</p><button class="btn" onclick="openRoutePopup('Delhi','Jaipur','₹1500')">Book</button></div>
+  <div class="card"><h3>Agra ➝ Mathura</h3><p>₹800</p><button class="btn" onclick="openRoutePopup('Agra','Mathura','₹800')">Book</button></div>
+  <div class="card"><h3>Lucknow ➝ Varanasi</h3><p>₹2,200</p><button class="btn" onclick="openRoutePopup('Lucknow','Varanasi','₹2200')">Book</button></div>
+  <div class="card"><h3>Dehradun ➝ Nainital</h3><p>₹3,500</p><button class="btn" onclick="openRoutePopup('Dehradun','Nainital','₹3500')">Book</button></div>
+  <div class="card"><h3>Haridwar ➝ Rishikesh</h3><p>₹900</p><button class="btn" onclick="openRoutePopup('Haridwar','Rishikesh','₹900')">Book</button></div>
+  <div class="card"><h3>Chandigarh ➝ Shimla</h3><p>₹3,800</p><button class="btn" onclick="openRoutePopup('Chandigarh','Shimla','₹3800')">Book</button></div>
+</div>
+</section>
+
+<!-- ROUTE POPUP -->
+<div id="routePopup" class="overlay">
+<div class="popup-box">
+<h2 id="routeTitle">Route Booking</h2>
+<p id="routePrice"></p>
+<button class="btn" onclick="bookRoute()">Confirm Booking</button>
+<button class="btn" onclick="closeRoutePopup()">Cancel</button>
+</div>
+</div>
+
+<!-- GALLERY -->
+<section id="gallery">
+<h2>Gallery</h2>
+<div class="gallery">
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470" onclick="openImg(this.src)">
+<img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce" onclick="openImg(this.src)">
+</div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking">
+<h2>Book Your Travel</h2>
+<form onsubmit="sendWhatsApp();return false;">
+<label for="name">Name</label>
+<input type="text" id="name" placeholder="Your Name" required>
+
+<label for="phone">Phone</label>
+<input type="tel" id="phone" placeholder="Phone Number" required>
+
+<label for="from">From</label>
+<input type="text" id="from" placeholder="From" onkeyup="calc()" required>
+
+<label for="to">To</label>
+<input type="text" id="to" placeholder="To" onkeyup="calc()" required>
+
+<label for="pickup">Pickup Location</label>
+<input type="text" id="pickup" placeholder="Pickup Location" required>
+<button type="button" class="btn" onclick="getLocation()">📍 Use Location</button>
+
+<label for="date">Booking Date</label>
+<input type="date" id="date" required>
+
+<label for="time">Booking Time</label>
+<input type="time" id="time" required>
+
+<h3 id="priceBox">Price: ₹0</h3>
+<button class="btn">Confirm Booking</button>
+</form>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+<h2>Customer Reviews</h2>
+<div class="card"><h3>⭐⭐⭐⭐⭐</h3><p>Best travel service!</p><b>- Aman</b></div>
+<div class="card"><h3>⭐⭐⭐⭐⭐</h3><p>Very comfortable journey</p><b>- Neha</b></div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+<h2>Contact</h2>
+<div class="contact-box">
+<p><b>Rajeev Yadav</b></p>
+<p><a href="tel:918859520701">+91 88595 20701</a></p>
+<p><a href="https://wa.me/918859520701">WhatsApp Chat</a></p>
+<p>Teen Pani Dam Rudrapur Utrakhand , India</p>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:15px;background:#020617;">
+© 2026 Raghav Tour & Travels
+</footer>
+
+<!-- WHATSAPP BUTTON -->
+<a class="whatsapp-btn" href="https://wa.me/918859520701">💬</a>
+
+<!-- POPUP -->
+<div id="popup" class="overlay">
+<div class="popup-box">
+<h2>Booking Sent</h2>
+<button onclick="closePopup()" class="btn">OK</button>
+</div>
+</div>
+
+<!-- IMAGE POPUP -->
+<div id="imgPopup" class="img-popup" onclick="closeImg()">
+<img id="popupImg">
+</div>
+
+<script>
+// Prices
+const prices={"rudrapur-delhi":999,"meerut-manali":7999};
+
+// Counters
+let counters = {totalBookings:1250,totalTravelers:3100,totalRoutes:850};
+function animateCounter(id,target){
+let el=document.getElementById(id);let current=0;let step=Math.ceil(target/200);
+let interval=setInterval(()=>{
+current+=step;
+if(current>=target){current=target;clearInterval(interval);}
+el.innerText=current.toLocaleString();
+},10);}
+window.onload=()=>{
+animateCounter('totalBookings',counters.totalBookings);
+animateCounter('totalTravelers',counters.totalTravelers);
+animateCounter('totalRoutes',counters.totalRoutes);
+};
+
+// Price calculation
+function calc(){
+let f=document.getElementById("from").value.toLowerCase();
+let t=document.getElementById("to").value.toLowerCase();
+let key=f+"-"+t;
+document.getElementById("priceBox").innerText=prices[key]?"Price: ₹"+prices[key]:"Contact Us";
+}
+
+// Geolocation with alert
+function getLocation(){
+navigator.geolocation.getCurrentPosition(
+pos=>{
+document.getElementById("pickup").value="https://maps.google.com/?q="+pos.coords.latitude+","+pos.coords.longitude;
+alert("Pickup Location Set ✅");
+},
+err=>{
+alert("Location Access Denied 🚫");
+}
+);
+}
+
+// WhatsApp booking with full details
+function sendWhatsApp(){
+let name=document.getElementById("name").value;
+let phone=document.getElementById("phone").value;
+let from=document.getElementById("from").value;
+let to=document.getElementById("to").value;
+let pickup=document.getElementById("pickup").value;
+let date=document.getElementById("date").value;
+let time=document.getElementById("time").value;
+
+let msg = `Booking Confirmed!\nName: ${name}\nPhone: ${phone}\nFrom: ${from}\nTo: ${to}\nPickup: ${pickup}\nDate: ${date}\nTime: ${time}`;
+alert(msg); 
+window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
+document.getElementById("popup").classList.add("active");
+}
+
+// Popup
+function closePopup(){document.getElementById("popup").classList.remove("active");}
+
+// Quick booking
+function quickBook(f,t){window.open(`https://wa.me/918859520701?text=${f} to ${t}`);}
+
+// Image popup
+function openImg(src){document.getElementById("imgPopup").style.display="flex";document.getElementById("popupImg").src=src;}
+function closeImg(){document.getElementById("imgPopup").style.display="none";}
+
+// Route Popup
+let selectedRoute = {from:'', to:'', price:''};
+function openRoutePopup(f,t,p){
+  selectedRoute = {from:f, to:t, price:p};
+  document.getElementById('routeTitle').innerText = `Book: ${f} ➝ ${t}`;
+  document.getElementById('routePrice').innerText = `Price: ${p}`;
+  document.getElementById('routePopup').classList.add('active');
+}
+function closeRoutePopup(){document.getElementById('routePopup').classList.remove('active');}
+function bookRoute(){
+  let msg = `Booking Confirmed!\nRoute: ${selectedRoute.from} ➝ ${selectedRoute.to}\nPrice: ${selectedRoute.price}`;
+  alert(msg);
+  window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
+  closeRoutePopup();
+}
+</script>
+
+</body>
+</html>
