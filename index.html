@@ -268,36 +268,63 @@ input, select, textarea{padding:12px;border:none;border-radius:6px;outline:none;
 <img id="popupImg">
 </div>
 
-<script>
-// Prices
+
+  <script type="module">
+// Firebase import
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyD9bD9ijZK6WUkE7A9GyyiSnjLUozNXz7U",
+  authDomain: "raghav-d9e01.firebaseapp.com",
+  databaseURL: "https://raghav-d9e01-default-rtdb.firebaseio.com",
+  projectId: "raghav-d9e01",
+  storageBucket: "raghav-d9e01.firebasestorage.app",
+  messagingSenderId: "902935133374",
+  appId: "1:902935133374:web:5b27fbc0bfd8506b7f32ef"
+};
+
+// Init Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ===== Prices =====
 const prices={"rudrapur-delhi":999,"meerut-manali":7999};
 
-// Counters
+// ===== Counters =====
 let counters = {totalBookings:1250,totalTravelers:3100,totalRoutes:850};
+
 function animateCounter(id,target){
-let el=document.getElementById(id);let current=0;let step=Math.ceil(target/200);
+let el=document.getElementById(id);
+let current=0;
+let step=Math.ceil(target/200);
+
 let interval=setInterval(()=>{
 current+=step;
 if(current>=target){current=target;clearInterval(interval);}
 el.innerText=current.toLocaleString();
-},10);}
+},10);
+}
+
 window.onload=()=>{
 animateCounter('totalBookings',counters.totalBookings);
 animateCounter('totalTravelers',counters.totalTravelers);
 animateCounter('totalRoutes',counters.totalRoutes);
-updateRating(); renderComments();
+updateRating();
+renderComments();
 };
 
-// Price calculation
-function calc(){
+// ===== Price calculation =====
+window.calc = function(){
 let f=document.getElementById("from").value.toLowerCase();
 let t=document.getElementById("to").value.toLowerCase();
 let key=f+"-"+t;
 document.getElementById("priceBox").innerText=prices[key]?"Price: ₹"+prices[key]:"Contact Us";
 }
 
-// Geolocation
-function getLocation(){
+// ===== Geolocation =====
+window.getLocation = function(){
 navigator.geolocation.getCurrentPosition(
 pos=>{
 document.getElementById("pickup").value="https://maps.google.com/?q="+pos.coords.latitude+","+pos.coords.longitude;
@@ -309,8 +336,9 @@ alert("Location Access Denied 🚫");
 );
 }
 
-// WhatsApp booking
-function sendWhatsApp(){
+// ===== ✅ UPDATED BOOKING =====
+window.sendWhatsApp = function(){
+
 let name=document.getElementById("name").value;
 let phone=document.getElementById("phone").value;
 let from=document.getElementById("from").value;
@@ -318,45 +346,76 @@ let to=document.getElementById("to").value;
 let pickup=document.getElementById("pickup").value;
 let date=document.getElementById("date").value;
 let time=document.getElementById("time").value;
-let msg = `Booking Confirmed!\nName: ${name}\nPhone: ${phone}\nFrom: ${from}\nTo: ${to}\nPickup: ${pickup}\nDate: ${date}\nTime: ${time}`;
-alert(msg);
+
+// 🔥 Save to Firebase
+push(ref(db, "bookings"), {
+  name, phone, from, to, pickup, date, time,
+  createdAt: new Date().toISOString()
+});
+
+// WhatsApp Message
+let msg = `🚖 Booking Confirmed!
+Name: ${name}
+Phone: ${phone}
+From: ${from}
+To: ${to}
+Pickup: ${pickup}
+Date: ${date}
+Time: ${time}`;
+
+// WhatsApp Open
 window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
+
+// Popup
 document.getElementById("popup").classList.add("active");
 }
 
-// Popup
-function closePopup(){document.getElementById("popup").classList.remove("active");}
+// ===== Popup =====
+window.closePopup = function(){
+document.getElementById("popup").classList.remove("active");
+}
 
-// Image popup
-function openImg(src){document.getElementById("imgPopup").style.display="flex";document.getElementById("popupImg").src=src;}
-function closeImg(){document.getElementById("imgPopup").style.display="none";}
+// ===== Image popup =====
+window.openImg = function(src){
+document.getElementById("imgPopup").style.display="flex";
+document.getElementById("popupImg").src=src;
+}
 
-// Route Popup
+window.closeImg = function(){
+document.getElementById("imgPopup").style.display="none";
+}
+
+// ===== Route Popup =====
 let selectedRoute = {from:'', to:'', price:''};
-function openRoutePopup(f,t,p){
+
+window.openRoutePopup = function(f,t,p){
 selectedRoute={from:f,to:t,price:p};
 document.getElementById('routeTitle').innerText=`Book: ${f} ➝ ${t}`;
 document.getElementById('routePrice').innerText=`Price: ${p}`;
 document.getElementById('routePopup').classList.add('active');
 }
-function closeRoutePopup(){document.getElementById('routePopup').classList.remove('active');}
-function bookRoute(){
-let msg=`Booking Confirmed!\nRoute: ${selectedRoute.from} ➝ ${selectedRoute.to}\nPrice: ${selectedRoute.price}`;
-alert(msg);
+
+window.closeRoutePopup = function(){
+document.getElementById('routePopup').classList.remove('active');
+}
+
+window.bookRoute = function(){
+let msg=`🚖 Booking Confirmed!
+Route: ${selectedRoute.from} ➝ ${selectedRoute.to}
+Price: ${selectedRoute.price}`;
 window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
 closeRoutePopup();
 }
 
-// ======= LIVE RATING =======
-let ratings = [5,5]; // existing ratings
-let comments = ["Excellent service!","Very Comfortable journey."]; // existing comments
+// ===== Rating =====
+let ratings = [5,5];
+let comments = ["Excellent service!","Very Comfortable journey."];
 
 const stars = document.querySelectorAll('#starRating .star');
 const ratingMsg = document.getElementById('ratingMsg');
 const commentInput = document.getElementById('commentInput');
 const commentsList = document.getElementById('commentsList');
 
-// Star hover and click
 stars.forEach(star => {
   star.addEventListener('mouseover', () => {
     stars.forEach(s => s.classList.remove('hover'));
@@ -375,43 +434,41 @@ stars.forEach(star => {
   });
 });
 
-// Update Rating
 function updateRating(){
-  let sum = ratings.reduce((a,b)=>a+b,0);
-  let avg = (sum/ratings.length).toFixed(1);
-  ratingMsg.innerText = `Average Rating: ${avg} ⭐ (${ratings.length} reviews)`;
-  stars.forEach((s,i)=>{
-    s.classList.remove('selected');
-    if(i<Math.round(avg)) s.classList.add('selected');
-  });
+let sum = ratings.reduce((a,b)=>a+b,0);
+let avg = (sum/ratings.length).toFixed(1);
+ratingMsg.innerText = `Average Rating: ${avg} ⭐ (${ratings.length} reviews)`;
+
+stars.forEach((s,i)=>{
+s.classList.remove('selected');
+if(i<Math.round(avg)) s.classList.add('selected');
+});
 }
 
-// Submit comment
-function submitReview(){
-  const comment = commentInput.value.trim();
-  if(comment){
-    comments.push(comment);
-    commentInput.value = "";
-    renderComments();
-    alert("Thank you for your comment!");
-  } else {
-    alert("Please write a comment before submitting!");
-  }
+window.submitReview = function(){
+const comment = commentInput.value.trim();
+if(comment){
+comments.push(comment);
+commentInput.value="";
+renderComments();
+alert("Thank you for your comment!");
+}else{
+alert("Please write a comment!");
+}
 }
 
-// Render comments
 function renderComments(){
-  commentsList.innerHTML = "";
-  comments.slice().reverse().forEach(c=>{
-    const div = document.createElement('div');
-    div.style.background = "rgba(255,255,255,0.05)";
-    div.style.padding = "10px 15px";
-    div.style.borderRadius = "10px";
-    div.style.marginBottom = "10px";
-    div.innerText = c;
-    commentsList.appendChild(div);
-  });
+commentsList.innerHTML="";
+comments.slice().reverse().forEach(c=>{
+const div=document.createElement('div');
+div.style.background="rgba(255,255,255,0.05)";
+div.style.padding="10px 15px";
+div.style.borderRadius="10px";
+div.style.marginBottom="10px";
+div.innerText=c;
+commentsList.appendChild(div);
+});
 }
-</script>
+  </script>
 </body>
 </html>
