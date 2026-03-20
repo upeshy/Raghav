@@ -4,23 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel | Raghav Tour & Travels</title>
+
 <style>
 body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:white;margin:0;padding:0;}
 header{background:#ffcc00;color:#111;padding:15px;text-align:center;font-weight:bold;}
 .container{max-width:1200px;margin:auto;padding:20px;}
 h2{color:#ffcc00;margin-top:20px;}
 section{background:rgba(255,255,255,0.05);padding:15px;margin-bottom:20px;border-radius:10px;}
-input,textarea,select,button{padding:8px;margin:5px 0;border-radius:5px;border:none;outline:none;}
+input,textarea,button{padding:8px;margin:5px 0;border-radius:5px;border:none;}
 button{background:#ffcc00;color:#111;font-weight:bold;cursor:pointer;}
-button:hover{background:#ff9900;}
 table{width:100%;border-collapse:collapse;margin-top:10px;}
-th,td{padding:10px;border-bottom:1px solid #555;text-align:left;}
-img{width:100px;margin:5px;}
+th,td{padding:10px;border-bottom:1px solid #555;}
 </style>
+
 </head>
 <body>
 
 <header>Raghav Tour & Travels | Admin Panel</header>
+
 <div class="container">
 
 <!-- LOGIN -->
@@ -39,181 +40,167 @@ img{width:100px;margin:5px;}
 <input type="text" id="routeTo" placeholder="To">
 <input type="number" id="routePrice" placeholder="Price">
 <button onclick="addRoute()">Add Route</button>
-<table id="routesTable"><tr><th>From</th><th>To</th><th>Price</th><th>Action</th></tr></table>
+
+<table id="routesTable">
+<tr><th>From</th><th>To</th><th>Price</th><th>Action</th></tr>
+</table>
 </section>
 
 <!-- BOOKINGS -->
 <section id="bookingsSection" style="display:none;">
-<h2>Bookings</h2>
-<table id="bookingsTable"><tr><th>Name</th><th>Phone</th><th>From</th><th>To</th><th>Date</th><th>Time</th><th>Pickup</th><th>Action</th></tr></table>
-</section>
-
-<!-- GALLERY -->
-<section id="gallerySection" style="display:none;">
-<h2>Gallery Images</h2>
-<input type="file" id="galleryFile">
-<button onclick="uploadGallery()">Upload Image</button>
-<div id="galleryList"></div>
+<h2>Bookings (Live)</h2>
+<table id="bookingsTable">
+<tr><th>Name</th><th>Phone</th><th>From</th><th>To</th><th>Date</th><th>Time</th><th>Pickup</th><th>Action</th></tr>
+</table>
 </section>
 
 <!-- ABOUT -->
 <section id="aboutSection" style="display:none;">
-<h2>Edit About Section</h2>
+<h2>Edit About</h2>
 <textarea id="aboutText" rows="5" style="width:100%;"></textarea>
-<button onclick="updateAbout()">Save About</button>
+<button onclick="updateAbout()">Save</button>
 </section>
 
 <!-- REVIEWS -->
 <section id="reviewsSection" style="display:none;">
-<h2>Manage Reviews</h2>
-<table id="reviewsTable"><tr><th>Comment</th><th>Action</th></tr></table>
+<h2>Reviews</h2>
+<table id="reviewsTable">
+<tr><th>Comment</th><th>Action</th></tr>
+</table>
 </section>
 
-<script type="module">
-// Firebase Modular SDK
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, listAll, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js";
+</div>
 
-// Firebase Config
+<script type="module">
+
+// Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Config
 const firebaseConfig = {
   apiKey: "AIzaSyD9bD9ijZK6WUkE7A9GyyiSnjLUozNXz7U",
   authDomain: "raghav-d9e01.firebaseapp.com",
   databaseURL: "https://raghav-d9e01-default-rtdb.firebaseio.com",
   projectId: "raghav-d9e01",
-  storageBucket: "raghav-d9e01.appspot.com",
-  messagingSenderId: "902935133374",
-  appId: "1:902935133374:web:5b27fbc0bfd8506b7f32ef",
-  measurementId: "G-3TMDN40VXM"
 };
 
-// Initialize
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
-const storage = getStorage();
+const rtdb = getDatabase();
 
 // LOGIN
 window.loginAdmin = function(){
-  const email = document.getElementById('adminEmail').value;
-  const pass = document.getElementById('adminPass').value;
+  let email = adminEmail.value;
+  let pass = adminPass.value;
+
   signInWithEmailAndPassword(auth,email,pass)
-  .then(() => {
-    document.getElementById('loginSection').style.display='none';
-    showAdminSections();
+  .then(()=>{
+    loginSection.style.display="none";
+    showSections();
     loadRoutes();
     loadBookings();
-    loadGallery();
     loadReviews();
   })
-  .catch(e => {document.getElementById('loginMsg').innerText = e.message;});
+  .catch(e=>{
+    loginMsg.innerText = e.message;
+  });
 }
 
-// SHOW ADMIN SECTIONS
-function showAdminSections(){
-  ['routesSection','bookingsSection','gallerySection','aboutSection','reviewsSection'].forEach(id=>{
+// SHOW SECTIONS
+function showSections(){
+  ['routesSection','bookingsSection','aboutSection','reviewsSection'].forEach(id=>{
     document.getElementById(id).style.display='block';
   });
 }
 
-// ROUTES
+// ROUTES (Firestore)
 window.addRoute = async function(){
-  const from = document.getElementById('routeFrom').value.trim();
-  const to = document.getElementById('routeTo').value.trim();
-  const price = parseInt(document.getElementById('routePrice').value.trim());
+  let from=routeFrom.value;
+  let to=routeTo.value;
+  let price=parseInt(routePrice.value);
+
   if(from && to && price){
-    await addDoc(collection(db,'routes'), {from,to,price});
+    await addDoc(collection(db,"routes"),{from,to,price});
     loadRoutes();
-    document.getElementById('routeFrom').value='';
-    document.getElementById('routeTo').value='';
-    document.getElementById('routePrice').value='';
+    routeFrom.value=""; routeTo.value=""; routePrice.value="";
   }
 }
 
 async function loadRoutes(){
-  const table = document.getElementById('routesTable');
-  table.innerHTML = '<tr><th>From</th><th>To</th><th>Price</th><th>Action</th></tr>';
-  const snapshot = await getDocs(collection(db,'routes'));
-  snapshot.forEach(docu=>{
-    const row = table.insertRow();
-    row.insertCell(0).innerText = docu.data().from;
-    row.insertCell(1).innerText = docu.data().to;
-    row.insertCell(2).innerText = '₹'+docu.data().price;
-    const delCell = row.insertCell(3);
-    const btn = document.createElement('button');
-    btn.innerText='Delete';
-    btn.onclick = ()=>{deleteDoc(doc(db,'routes',docu.id)).then(loadRoutes);}
-    delCell.appendChild(btn);
+  let table=routesTable;
+  table.innerHTML='<tr><th>From</th><th>To</th><th>Price</th><th>Action</th></tr>';
+
+  let snap=await getDocs(collection(db,"routes"));
+  snap.forEach(d=>{
+    let row=table.insertRow();
+    row.insertCell(0).innerText=d.data().from;
+    row.insertCell(1).innerText=d.data().to;
+    row.insertCell(2).innerText="₹"+d.data().price;
+
+    let btn=document.createElement("button");
+    btn.innerText="Delete";
+    btn.onclick=()=>deleteDoc(doc(db,"routes",d.id)).then(loadRoutes);
+
+    row.insertCell(3).appendChild(btn);
   });
 }
 
-// BOOKINGS
-async function loadBookings(){
-  const table = document.getElementById('bookingsTable');
-  table.innerHTML = '<tr><th>Name</th><th>Phone</th><th>From</th><th>To</th><th>Date</th><th>Time</th><th>Pickup</th><th>Action</th></tr>';
-  const snapshot = await getDocs(collection(db,'bookings'));
-  snapshot.forEach(docu=>{
-    const row = table.insertRow();
-    const data = docu.data();
-    row.insertCell(0).innerText = data.name;
-    row.insertCell(1).innerText = data.phone;
-    row.insertCell(2).innerText = data.from;
-    row.insertCell(3).innerText = data.to;
-    row.insertCell(4).innerText = data.date;
-    row.insertCell(5).innerText = data.time;
-    row.insertCell(6).innerText = data.pickup;
-    const delCell = row.insertCell(7);
-    const btn = document.createElement('button');
-    btn.innerText='Delete';
-    btn.onclick = ()=>{deleteDoc(doc(db,'bookings',docu.id)).then(loadBookings);}
-    delCell.appendChild(btn);
-  });
-}
+// BOOKINGS (Realtime DB)
+function loadBookings(){
+  let table=bookingsTable;
 
-// GALLERY
-window.uploadGallery = async function(){
-  const file = document.getElementById('galleryFile').files[0];
-  if(file){
-    const fileRef = ref(storage,'gallery/'+file.name);
-    await uploadBytes(fileRef,file);
-    loadGallery();
-  }
-}
+  onValue(ref(rtdb,"bookings"),snap=>{
+    table.innerHTML='<tr><th>Name</th><th>Phone</th><th>From</th><th>To</th><th>Date</th><th>Time</th><th>Pickup</th><th>Action</th></tr>';
 
-async function loadGallery(){
-  const div = document.getElementById('galleryList');
-  div.innerHTML='';
-  const list = await listAll(ref(storage,'gallery'));
-  list.items.forEach(async item=>{
-    const url = await getDownloadURL(item);
-    const img = document.createElement('img');
-    img.src = url;
-    div.appendChild(img);
+    snap.forEach(child=>{
+      let d=child.val();
+      let key=child.key;
+
+      let row=table.insertRow();
+      row.insertCell(0).innerText=d.name;
+      row.insertCell(1).innerText=d.phone;
+      row.insertCell(2).innerText=d.from;
+      row.insertCell(3).innerText=d.to;
+      row.insertCell(4).innerText=d.date;
+      row.insertCell(5).innerText=d.time;
+      row.insertCell(6).innerText=d.pickup;
+
+      let btn=document.createElement("button");
+      btn.innerText="Delete";
+      btn.onclick=()=>remove(ref(rtdb,"bookings/"+key));
+
+      row.insertCell(7).appendChild(btn);
+    });
   });
 }
 
 // ABOUT
 window.updateAbout = async function(){
-  const text = document.getElementById('aboutText').value;
-  await setDoc(doc(db,'content','about'),{text});
+  await setDoc(doc(db,"content","about"),{text:aboutText.value});
 }
 
 // REVIEWS
 async function loadReviews(){
-  const table = document.getElementById('reviewsTable');
-  table.innerHTML = '<tr><th>Comment</th><th>Action</th></tr>';
-  const snapshot = await getDocs(collection(db,'reviews'));
-  snapshot.forEach(docu=>{
-    const row = table.insertRow();
-    row.insertCell(0).innerText = docu.data().comment;
-    const delCell = row.insertCell(1);
-    const btn = document.createElement('button');
-    btn.innerText='Delete';
-    btn.onclick = ()=>{deleteDoc(doc(db,'reviews',docu.id)).then(loadReviews);}
-    delCell.appendChild(btn);
+  let table=reviewsTable;
+  table.innerHTML='<tr><th>Comment</th><th>Action</th></tr>';
+
+  let snap=await getDocs(collection(db,"reviews"));
+  snap.forEach(d=>{
+    let row=table.insertRow();
+    row.insertCell(0).innerText=d.data().comment;
+
+    let btn=document.createElement("button");
+    btn.innerText="Delete";
+    btn.onclick=()=>deleteDoc(doc(db,"reviews",d.id)).then(loadReviews);
+
+    row.insertCell(1).appendChild(btn);
   });
 }
+
 </script>
 
 </body>
