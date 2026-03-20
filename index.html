@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raghav Tour & Travels | Premium Travel Agency</title>
-
 <style>
 /* ===== GLOBAL STYLES ===== */
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;scroll-behavior:smooth;}
@@ -16,7 +15,7 @@ a{text-decoration:none;}
 background:linear-gradient(90deg,#ffcc00,#ff9900);
 padding:18px;text-align:center;box-shadow:0 5px 20px rgba(0,0,0,0.4);
 }
-.logo-box img{width:120px;height:120px;border-radius:50%;border:3px solid black;} /* Logo size increased */
+.logo-box img{width:120px;height:120px;border-radius:50%;border:3px solid black;}
 .logo-box span{font-size:22px;font-weight:bold;color:#111;display:block;margin-top:5px;}
 
 /* ===== NAVIGATION ===== */
@@ -63,7 +62,7 @@ h2{text-align:center;color:#ffcc00;margin-bottom:30px;font-size:28px;}
 /* ===== BOOKING FORM ===== */
 form{max-width:420px;margin:auto;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.06);padding:25px;border-radius:15px;}
 label{color:#ffcc00;font-weight:bold;}
-input, select{padding:12px;border:none;border-radius:6px;outline:none;}
+input, select, textarea{padding:12px;border:none;border-radius:6px;outline:none;}
 #priceBox{text-align:center;color:#00ffcc;font-size:19px;margin-top:10px;}
 
 /* ===== REVIEWS ===== */
@@ -83,6 +82,10 @@ input, select{padding:12px;border:none;border-radius:6px;outline:none;}
 /* ===== IMAGE POPUP ===== */
 .img-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;}
 .img-popup img{max-width:90%;border-radius:10px;box-shadow:0 0 25px #ffcc00;}
+
+/* ===== STAR RATING ===== */
+#starRating .star{color:#ccc; font-size:30px; cursor:pointer;}
+#starRating .star.hover, #starRating .star.selected{color:#ffcc00;}
 </style>
 </head>
 <body>
@@ -104,6 +107,7 @@ input, select{padding:12px;border:none;border-radius:6px;outline:none;}
 <a href="#gallery">Gallery</a>
 <a href="#booking">Booking</a>
 <a href="#reviews">Reviews</a>
+<a href="#ratingSection">Ratings</a>
 <a href="#contact">Contact</a>
 </nav>
 
@@ -186,28 +190,21 @@ input, select{padding:12px;border:none;border-radius:6px;outline:none;}
 <section id="booking">
 <h2>Book Your Travel</h2>
 <form onsubmit="sendWhatsApp();return false;">
-<label for="name">Name</label>
+<label>Name</label>
 <input type="text" id="name" placeholder="Your Name" required>
-
-<label for="phone">Phone</label>
+<label>Phone</label>
 <input type="tel" id="phone" placeholder="Phone Number" required>
-
-<label for="from">From</label>
+<label>From</label>
 <input type="text" id="from" placeholder="From" onkeyup="calc()" required>
-
-<label for="to">To</label>
+<label>To</label>
 <input type="text" id="to" placeholder="To" onkeyup="calc()" required>
-
-<label for="pickup">Pickup Location</label>
+<label>Pickup Location</label>
 <input type="text" id="pickup" placeholder="Pickup Location" required>
 <button type="button" class="btn" onclick="getLocation()">📍 Use Location</button>
-
-<label for="date">Booking Date</label>
+<label>Date</label>
 <input type="date" id="date" required>
-
-<label for="time">Booking Time</label>
+<label>Time</label>
 <input type="time" id="time" required>
-
 <h3 id="priceBox">Price: ₹0</h3>
 <button class="btn">Confirm Booking</button>
 </form>
@@ -218,6 +215,25 @@ input, select{padding:12px;border:none;border-radius:6px;outline:none;}
 <h2>Customer Reviews</h2>
 <div class="card"><h3>⭐⭐⭐⭐⭐</h3><p>Best travel service!</p><b>- Aman</b></div>
 <div class="card"><h3>⭐⭐⭐⭐⭐</h3><p>Very comfortable journey</p><b>- Neha</b></div>
+</section>
+
+<!-- RATING + COMMENTS -->
+<section id="ratingSection">
+<h2>Customer Ratings & Comments</h2>
+<div id="starRating" style="text-align:center; margin-bottom:10px;">
+<span class="star" data-value="1">★</span>
+<span class="star" data-value="2">★</span>
+<span class="star" data-value="3">★</span>
+<span class="star" data-value="4">★</span>
+<span class="star" data-value="5">★</span>
+</div>
+<h3 id="ratingMsg" style="text-align:center; margin-bottom:15px;">Average Rating: 5 ⭐ (2 reviews)</h3>
+<div style="text-align:center;">
+<textarea id="commentInput" placeholder="Write your comment..." rows="3" style="width:90%; padding:10px; border-radius:8px; border:none; outline:none;"></textarea>
+<br>
+<button class="btn" onclick="submitReview()" style="margin-top:10px;">Submit Review</button>
+</div>
+<div id="commentsList" style="margin-top:20px; max-width:600px; margin-left:auto; margin-right:auto;"></div>
 </section>
 
 <!-- CONTACT -->
@@ -269,6 +285,7 @@ window.onload=()=>{
 animateCounter('totalBookings',counters.totalBookings);
 animateCounter('totalTravelers',counters.totalTravelers);
 animateCounter('totalRoutes',counters.totalRoutes);
+updateRating(); renderComments();
 };
 
 // Price calculation
@@ -279,7 +296,7 @@ let key=f+"-"+t;
 document.getElementById("priceBox").innerText=prices[key]?"Price: ₹"+prices[key]:"Contact Us";
 }
 
-// Geolocation with alert
+// Geolocation
 function getLocation(){
 navigator.geolocation.getCurrentPosition(
 pos=>{
@@ -292,7 +309,7 @@ alert("Location Access Denied 🚫");
 );
 }
 
-// WhatsApp booking with full details
+// WhatsApp booking
 function sendWhatsApp(){
 let name=document.getElementById("name").value;
 let phone=document.getElementById("phone").value;
@@ -301,18 +318,14 @@ let to=document.getElementById("to").value;
 let pickup=document.getElementById("pickup").value;
 let date=document.getElementById("date").value;
 let time=document.getElementById("time").value;
-
 let msg = `Booking Confirmed!\nName: ${name}\nPhone: ${phone}\nFrom: ${from}\nTo: ${to}\nPickup: ${pickup}\nDate: ${date}\nTime: ${time}`;
-alert(msg); 
+alert(msg);
 window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
 document.getElementById("popup").classList.add("active");
 }
 
 // Popup
 function closePopup(){document.getElementById("popup").classList.remove("active");}
-
-// Quick booking
-function quickBook(f,t){window.open(`https://wa.me/918859520701?text=${f} to ${t}`);}
 
 // Image popup
 function openImg(src){document.getElementById("imgPopup").style.display="flex";document.getElementById("popupImg").src=src;}
@@ -321,19 +334,84 @@ function closeImg(){document.getElementById("imgPopup").style.display="none";}
 // Route Popup
 let selectedRoute = {from:'', to:'', price:''};
 function openRoutePopup(f,t,p){
-  selectedRoute = {from:f, to:t, price:p};
-  document.getElementById('routeTitle').innerText = `Book: ${f} ➝ ${t}`;
-  document.getElementById('routePrice').innerText = `Price: ${p}`;
-  document.getElementById('routePopup').classList.add('active');
+selectedRoute={from:f,to:t,price:p};
+document.getElementById('routeTitle').innerText=`Book: ${f} ➝ ${t}`;
+document.getElementById('routePrice').innerText=`Price: ${p}`;
+document.getElementById('routePopup').classList.add('active');
 }
 function closeRoutePopup(){document.getElementById('routePopup').classList.remove('active');}
 function bookRoute(){
-  let msg = `Booking Confirmed!\nRoute: ${selectedRoute.from} ➝ ${selectedRoute.to}\nPrice: ${selectedRoute.price}`;
-  alert(msg);
-  window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
-  closeRoutePopup();
+let msg=`Booking Confirmed!\nRoute: ${selectedRoute.from} ➝ ${selectedRoute.to}\nPrice: ${selectedRoute.price}`;
+alert(msg);
+window.open(`https://wa.me/918859520701?text=${encodeURIComponent(msg)}`);
+closeRoutePopup();
+}
+
+// ======= LIVE RATING =======
+let ratings = [5,5]; // existing ratings
+let comments = ["Excellent service!","Very Comfortable journey."]; // existing comments
+
+const stars = document.querySelectorAll('#starRating .star');
+const ratingMsg = document.getElementById('ratingMsg');
+const commentInput = document.getElementById('commentInput');
+const commentsList = document.getElementById('commentsList');
+
+// Star hover and click
+stars.forEach(star => {
+  star.addEventListener('mouseover', () => {
+    stars.forEach(s => s.classList.remove('hover'));
+    for(let i=0;i<star.dataset.value;i++){
+      stars[i].classList.add('hover');
+    }
+  });
+  star.addEventListener('mouseout', () => {
+    stars.forEach(s => s.classList.remove('hover'));
+  });
+  star.addEventListener('click', () => {
+    const value = parseInt(star.dataset.value);
+    ratings.push(value);
+    updateRating();
+    alert(`Thank you for rating ${value} ⭐`);
+  });
+});
+
+// Update Rating
+function updateRating(){
+  let sum = ratings.reduce((a,b)=>a+b,0);
+  let avg = (sum/ratings.length).toFixed(1);
+  ratingMsg.innerText = `Average Rating: ${avg} ⭐ (${ratings.length} reviews)`;
+  stars.forEach((s,i)=>{
+    s.classList.remove('selected');
+    if(i<Math.round(avg)) s.classList.add('selected');
+  });
+}
+
+// Submit comment
+function submitReview(){
+  const comment = commentInput.value.trim();
+  if(comment){
+    comments.push(comment);
+    commentInput.value = "";
+    renderComments();
+    alert("Thank you for your comment!");
+  } else {
+    alert("Please write a comment before submitting!");
+  }
+}
+
+// Render comments
+function renderComments(){
+  commentsList.innerHTML = "";
+  comments.slice().reverse().forEach(c=>{
+    const div = document.createElement('div');
+    div.style.background = "rgba(255,255,255,0.05)";
+    div.style.padding = "10px 15px";
+    div.style.borderRadius = "10px";
+    div.style.marginBottom = "10px";
+    div.innerText = c;
+    commentsList.appendChild(div);
+  });
 }
 </script>
-
 </body>
 </html>
