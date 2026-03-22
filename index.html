@@ -197,56 +197,80 @@ We offer safe, reliable and comfortable journeys with experienced drivers.
 <!-- ROUTE POPUP -->
 <div id="routePopup" class="overlay">
 <div class="popup-box">
-<h2 id="routeTitle">Route Booking</h2>
+<h2 id="routeTitle">Taxi Route Booking</h2>
 <p id="routePrice"></p>
-<button class="btn" onclick="bookRoute()">Confirm Booking</button>
+<button class="btn" onclick="bookRoute()">Confirm Taxi Booking</button>
 <button class="btn" onclick="closeRoutePopup()">Cancel</button>
 </div>
 </div>
 
 <!-- GALLERY -->
 <section id="gallery">
-<h2>Gallery</h2>
+<h2>Rudrapur Taxi Service Gallery</h2>
 <div class="gallery">
-<img src="care1.jpg" onclick="openImg(this.src)">
-<img src="care2.jpg" onclick="openImg(this.src)">
+<img src="care1.jpg" alt="Rudrapur to Delhi Taxi Car" onclick="openImg(this.src)">
+<img src="care2.jpg" alt="Haldwani to Delhi Cab Service" onclick="openImg(this.src)">
 </div>
 </section>
 
 <!-- BOOKING -->
 <section id="booking">
-<h2>Book Your Travel</h2>
+<h2>Book Taxi in Rudrapur</h2>
+
+<p style="text-align:center; margin-bottom:15px;">
+Book your <b>Rudrapur to Delhi taxi</b>, <b>Haldwani cab</b>, or any Uttarakhand taxi service easily.
+</p>
+
 <form onsubmit="sendWhatsApp();return false;">
 <label>Name</label>
 <input type="text" id="name" placeholder="Your Name" required>
+
 <label>Phone</label>
 <input type="tel" id="phone" placeholder="Phone Number" required>
-<label>From</label>
-<input type="text" id="from" placeholder="From" onkeyup="calc()" required>
-<label>To</label>
-<input type="text" id="to" placeholder="To" onkeyup="calc()" required>
+
+<label>From (Pickup City)</label>
+<input type="text" id="from" placeholder="Rudrapur / Haldwani / Delhi" onkeyup="calc()" required>
+
+<label>To (Destination)</label>
+<input type="text" id="to" placeholder="Delhi / Dehradun / Haridwar" onkeyup="calc()" required>
+
 <label>Pickup Location</label>
-<input type="text" id="pickup" placeholder="Pickup Location" required>
-<button type="button" class="btn" onclick="getLocation()">📍 Use Location</button>
+<input type="text" id="pickup" placeholder="Enter Pickup Location" required>
+<button type="button" class="btn" onclick="getLocation()">📍 Use Current Location</button>
+
 <label>Date</label>
 <input type="date" id="date" required>
+
 <label>Time</label>
 <input type="time" id="time" required>
-<h3 id="priceBox">Price: ₹0</h3>
-<button class="btn">Confirm Booking</button>
+
+<h3 id="priceBox">Estimated Price: ₹0</h3>
+
+<button class="btn">Confirm Taxi Booking</button>
 </form>
 </section>
 
 <!-- REVIEWS -->
 <section id="reviews">
-<h2>Customer Reviews</h2>
-<div class="card"><h3>⭐⭐⭐⭐⭐</h3><p>Best travel service!</p><b>- Aman</b></div>
-<div class="card"><h3>⭐⭐⭐⭐⭐</h3><p>Very comfortable journey</p><b>- Neha</b></div>
+<h2>Customer Reviews for Rudrapur Taxi Service</h2>
+
+<div class="card">
+<h3>⭐⭐⭐⭐⭐</h3>
+<p>Best Rudrapur to Delhi taxi service, very comfortable ride!</p>
+<b>- Aman</b>
+</div>
+
+<div class="card">
+<h3>⭐⭐⭐⭐⭐</h3>
+<p>Affordable and safe cab service from Haldwani to Delhi.</p>
+<b>- Neha</b>
+</div>
 </section>
 
 <!-- RATING + COMMENTS -->
 <section id="ratingSection">
-<h2>Customer Ratings & Comments</h2>
+<h2>Taxi Service Ratings & Customer Feedback</h2>
+
 <div id="starRating" style="text-align:center; margin-bottom:10px;">
 <span class="star" data-value="1">★</span>
 <span class="star" data-value="2">★</span>
@@ -254,29 +278,47 @@ We offer safe, reliable and comfortable journeys with experienced drivers.
 <span class="star" data-value="4">★</span>
 <span class="star" data-value="5">★</span>
 </div>
-<h3 id="ratingMsg" style="text-align:center; margin-bottom:15px;">Average Rating: 5 ⭐ (2 reviews)</h3>
+
+<h3 id="ratingMsg" style="text-align:center; margin-bottom:15px;">
+Average Rating: 5 ⭐ (2 reviews)
+</h3>
+
 <div style="text-align:center;">
-<textarea id="commentInput" placeholder="Write your comment..." rows="3" style="width:90%; padding:10px; border-radius:8px; border:none; outline:none;"></textarea>
+<textarea id="commentInput" placeholder="Write your taxi experience..." rows="3"
+style="width:90%; padding:10px; border-radius:8px; border:none; outline:none;"></textarea>
 <br>
-<button class="btn" onclick="submitReview()" style="margin-top:10px;">Submit Review</button>
+<button class="btn" onclick="submitReview()" style="margin-top:10px;">
+Submit Review
+</button>
 </div>
+
 <div id="commentsList" style="margin-top:20px; max-width:600px; margin-left:auto; margin-right:auto;"></div>
 </section>
 
 <!-- CONTACT -->
 <section id="contact">
-<h2>Contact</h2>
+<h2>Contact Rudrapur Taxi Service</h2>
+
 <div class="contact-box">
-<p><b>Rajeev Yadav</b></p>
-<p><a href="tel:918859520701">+91 88595 20701</a></p>
-<p><a href="https://wa.me/918859520701">WhatsApp Chat</a></p>
-<p>Teen Pani Dam Rudrapur Utrakhand , India</p>
+<p><b>Raghav Tour & Travels - Rajeev Yadav</b></p>
+
+<p>
+📞 <a href="tel:918859520701">+91 88595 20701</a>
+</p>
+
+<p>
+💬 <a href="https://wa.me/918859520701">WhatsApp Taxi Booking</a>
+</p>
+
+<p>
+📍 Teen Pani Dam, Rudrapur, Uttarakhand, India
+</p>
 </div>
 </section>
 
 <!-- FOOTER -->
 <footer style="text-align:center;padding:15px;background:#020617;">
-© 2026 Raghav Tour & Travels
+© 2026 Raghav Tour & Travels | Rudrapur Taxi Service | Uttarakhand Cab Booking
 </footer>
 
 <!-- WHATSAPP BUTTON -->
@@ -285,7 +327,7 @@ We offer safe, reliable and comfortable journeys with experienced drivers.
 <!-- POPUP -->
 <div id="popup" class="overlay">
 <div class="popup-box">
-<h2>Booking Sent</h2>
+<h2>Taxi Booking Sent Successfully ✅</h2>
 <button onclick="closePopup()" class="btn">OK</button>
 </div>
 </div>
@@ -294,7 +336,6 @@ We offer safe, reliable and comfortable journeys with experienced drivers.
 <div id="imgPopup" class="img-popup" onclick="closeImg()">
 <img id="popupImg">
 </div>
-
 
   <script type="module">
 // Firebase import
